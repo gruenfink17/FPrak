@@ -92,7 +92,9 @@ def latex(data: list, headers: list):
     table = tl.tabulate(tab, headers=headers, tablefmt="latex_booktabs", numalign="center", stralign="center")
     return table
 
+#Zusammengesetzten Messfehler aus statistischem Fehler und Messfehler des Messgeräts berechnen
+def Gesamtfehler(Gerätfehler, Stabw):
+    Gesfehler= np.sqrt(Stabw**2+Gerätfehler**2)
+    return Gesfehler
 
 #TODO: Funktion für Plots?
-
-
