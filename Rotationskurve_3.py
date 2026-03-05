@@ -27,6 +27,11 @@ sigma_longitude = np.array([2, 2, 2, 2, 2, 2, 2, 2, 2])
 # dstance R with uncertainty 
 distance_R = 8.5 * unumpy.sin(unumpy.uarray(longitude, sigma_longitude) / 180 * np.pi)  # kpc
 
+R_nom = unumpy.nominal_values(distance_R)
+
+# generating 100 x values to plot the baryonic curve
+R_smooth = np.linspace(np.min(R_nom), np.max(R_nom), 100)
+
 
 w_0 = 220/8.5  # km/s /kpc 
 
@@ -34,25 +39,24 @@ orbital_velocity = unumpy.uarray(max_rad_velocity, sigma_rad_velocity) + w_0 * d
 
 orbital_vel_bar = 452 * unumpy.sqrt(1/distance_R * (1 - (distance_R / 2 + 1) * unumpy.exp(-distance_R / 2)))
 
+orbital_vel_bar_smooth = 452 * np.sqrt(1/R_smooth * (1 - (R_smooth / 2 + 1) * np.exp(-R_smooth / 2)))
+
 plt.errorbar(
     unumpy.nominal_values(distance_R),
     unumpy.nominal_values(orbital_velocity),
     yerr=unumpy.std_devs(orbital_velocity),
-    xerr=unumpy.std_devs(distance_R),       # optional, für Fehler in R
+    xerr=unumpy.std_devs(distance_R),      
     fmt='o',
     color='r',
     markersize=5,
     capsize=2.5,
     label='measured'
 )
-plt.errorbar(
-    unumpy.nominal_values(distance_R),
-    unumpy.nominal_values(orbital_vel_bar),
-       
-    fmt='o',
+plt.plot(
+    R_smooth,
+    orbital_vel_bar_smooth,
     color='b',
-    markersize=5,
-    capsize=2.5,
+    linewidth=2,
     label='baryonic'
 )
 plt.title("Rotational curve milky way")
@@ -69,13 +73,16 @@ m_mw = 0.234e10 * (orbital_velocity / 100)**2 * distance_R* 1.98e30
 
 m_bar = 0.234e10 * (orbital_vel_bar / 100)**2 * distance_R* 1.98e30
 
+m_bar_smooth = 0.234e10 * (orbital_vel_bar_smooth / 100)**2 * R_smooth* 1.98e30
+
 m_mw_sunmass = m_mw / 1.98e30
 m_bar_sunmass = m_bar / 1.98e30
+m_bar_sunmass_smooth = m_bar_smooth /  1.98e30
 
 m_dm_sunmass = m_mw_sunmass - m_bar_sunmass
 
 plt.errorbar(unumpy.nominal_values(distance_R) , unumpy.nominal_values(m_mw_sunmass), yerr= unumpy.std_devs(m_mw_sunmass), xerr=unumpy.std_devs(distance_R), marker='o', color='r', fmt='o', markersize = 5, capsize = 2.5, label='measured')
-plt.errorbar(unumpy.nominal_values(distance_R) , unumpy.nominal_values(m_bar_sunmass), marker='.', color='b', fmt='o', markersize = 5, capsize = 2.5, label='baryionic')
+plt.plot(R_smooth , m_bar_sunmass_smooth, color='b', linewidth = 2, label='baryionic')
 plt.title("Enclosed mass milky way")
 plt.xlabel("R (kpc)")
 plt.ylabel("enclosed mass / sun mass")
@@ -94,7 +101,7 @@ def lin_func(x, m, b):
 x = unumpy.uarray(unumpy.nominal_values(distance_R), unumpy.std_devs(distance_R))
 y = unumpy.uarray(unumpy.nominal_values(m_dm_sunmass), unumpy.std_devs(m_dm_sunmass))
 
-# ---- NEU: Datensatz für Fit ohne ersten Punkt ----
+# data without first value to avoid negative mass values later 
 x_fit = unumpy.nominal_values(x)[1:]
 y_fit = unumpy.nominal_values(y)[1:]
 y_err_fit = unumpy.std_devs(y)[1:]
@@ -139,17 +146,17 @@ print(f"M(R_0) = {lin_func(8.5, m, b):.3e}")
 
 plt.errorbar(unumpy.nominal_values(distance_R) , unumpy.nominal_values(m_mw_sunmass), yerr= unumpy.std_devs(m_mw_sunmass), xerr=unumpy.std_devs(distance_R), marker='o', color='r', fmt='o', markersize = 5, capsize = 2.5, label='measured')
 plt.plot(
-    unumpy.nominal_values(distance_R),
-    unumpy.nominal_values(m_bar_sunmass),
+    R_smooth,
+    m_bar_sunmass_smooth,
     color='b',
     markersize=5,
     label='baryonic'
 )
 plt.errorbar(
-    unumpy.nominal_values(distance_R),         # x-Werte
-    unumpy.nominal_values(m_dm_sunmass),      # y-Werte
-    xerr=unumpy.std_devs(distance_R),         # Fehler in x
-    yerr=unumpy.std_devs(m_dm_sunmass),       # Fehler in y
+    unumpy.nominal_values(distance_R),         
+    unumpy.nominal_values(m_dm_sunmass),      
+    xerr=unumpy.std_devs(distance_R),
+    yerr=unumpy.std_devs(m_dm_sunmass),       
     marker='o',
     color='g',
     fmt='o',
