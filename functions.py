@@ -2,8 +2,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import uncertainties as uc
+import uncertainties.unumpy as unp
 import tabulate as tl
 import scipy.optimize as opt
+import sklearn.metrics as skm
 
 
 #Standardabweichung (Stichprobenvarianz) richtig berechnen:
