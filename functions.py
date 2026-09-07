@@ -22,65 +22,23 @@ def get_mean (list):
 #def linreg(x,m,a):
     #return m*x+a
 
-def optimal_params (function, xdata, ydata, yerr):
+
+def optimal_params (function, xdata, ydata, yerr, p0=None):
     """
            gibt die optimalen Parameter und deren Fehler aus.
 
            :param function: vorher definierte Funktion, z.B. linreg
-           :param xdata: Liste mit x-Werten
-           :param ydata: Liste mit y-Werten
+           :param xdata: Liste mit x-Werten (oder array)
+           :param ydata: Liste mit y-Werten (oder array)
            :param yerr: Fehler auf y-Werte (scalar oder 1d-array)
-           :return: Liste der optimalen Parameter mit Fehlern als ufloat
+           :param p0: Liste von initial guesses
+           :return: tuple(?) der optimalen Parameter mit Fehlern als ufloat
            """
-    params, cov = opt.curve_fit(function, xdata, ydata, sigma=yerr, absolute_sigma=True)
-    param_errors = np.sqrt(np.diag(cov))
-    # Erstelle ufloats für jeden Parameter
-    param_with_errors = [uc.ufloat(val, err) for val, err in zip(params, param_errors)]
+    params, cov = opt.curve_fit(function, np.asarray(xdata), np.asarray(ydata), p0=p0, nan_policy='omit', sigma=yerr, absolute_sigma=True)
+    #creating correlated variables to handle correlation correctly
+    param_with_errors = uc.correlated_values(params,cov)
     return param_with_errors
 
-
-###fitten in einer funktion – bin mir sehr unsicher ob diese funktion hilfreich sein wird oder ob man letztendlich eh immer die zu fittende funktion definiert und dann einfach das obige verwendet
-
-
-def generate_curve_func(equation, parameter_names):
-    """
-    Erzeugt eine Funktion für curve_fit aus einer mathematischen Gleichung als String.
-
-    :param equation: String, z.B. 'm * x + a'
-    :param parameter_names: Liste von Parameternamen, z.B. ['m', 'a']
-    :return: Funktion, die in curve_fit verwendet werden kann
-    """
-
-    def func(x, *params):
-        local_dict = {'x': x}
-        # Parameter in local_dict einfügen
-        for name, value in zip(parameter_names, params):
-            local_dict[name] = value
-        # Gleichung auswerten: wertet equation aus und ersetzt die parameter durch die params im local dict.
-        # verwendet keine builtin funktionen.
-        return eval(equation, {"__builtins__": None}, local_dict)
-
-    return func
-
-
-def fit_curve (equation,parameter_names,xdata,ydata, yerr, p0):
-    """
-        Verwendet generate_curve_func und macht damit den opt.curve_fit, gibt also die optimalen Parameter und deren Fehler aus.
-
-        :param equation: String, z.B. 'm * x + a'
-        :param parameter_names: Liste von Parameternamen, z.B. ['m', 'a']
-        :param xdata: Liste mit x-Werten
-        :param ydata: Liste mit y-Werten
-        :param yerr: Fehler auf y-Werte (scalar oder 1d-array)
-        :param p0: Initial guess, z.B. p0=[1,1]. Muss in der gleichen Reihenfolge sein wie parameter_names.
-        :return: optimale Parameter mit Fehlern als ufloat
-        """
-    fit_func=generate_curve_func(equation, parameter_names)
-    params, cov = opt.curve_fit(fit_func, xdata, ydata, p0=p0, sigma=yerr,absolute_sigma=True)
-    param_errors = np.sqrt(np.diag(cov))
-    # Erstelle ufloats für jeden Parameter
-    param_with_errors = [uc.ufloat(val, err) for val, err in zip(params, param_errors)]
-    return param_with_errors
 
 #Tabellen fürs Protokoll erstellen
 def latex(data: list, headers: list):
@@ -88,6 +46,7 @@ def latex(data: list, headers: list):
 
     :param data: table data as a list (of lists or arrays)(e.g. [x,y])
     :param headers: headers of the table as a list of strings (e.g. ["x","y"])"""
+    #TODO: pandas-Unterstützung
     tab = np.array(data).transpose() #macht ein vertikales array aus dem horizontalen
     table = tl.tabulate(tab, headers=headers, tablefmt="latex_booktabs", numalign="center", stralign="center")
     return table
@@ -97,4 +56,4 @@ def Gesamtfehler(Gerätfehler, Stabw):
     Gesfehler= np.sqrt(Stabw**2+Gerätfehler**2)
     return Gesfehler
 
-#TODO: Funktion für Plots?
+
