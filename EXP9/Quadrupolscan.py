@@ -1,4 +1,5 @@
 from functions import *
+from Energiemessung import beta_gamma
 Ierr = 0.003 #Fehler auf Strom in A #ToDo: nehmen oder weglassen?
 RMSerr = 0.2/np.sqrt(15) #Fehler auf Strahlbreiten in mm
 
@@ -34,12 +35,15 @@ ax.set_title("Vertikaler Quadrupolscan")
 ax.grid(True)
 ax.set_xlabel(r"$I_Q$ [A]")
 ax.set_ylabel(r"$\sigma_y$ [mm]")
-plt.show()
 
 
 #Mit dem Skript berechnete Emittanz und Fehler und T-Vektoren (siehe Gl. 62):
 T_h = 1.0e-03 * np.array([0.0142, 0.0398, 0.1188])
 T_v = 1.0e-05 * np.array([0.2834, 0.3159, 0.6386])
+
+print("T_x:", T_h)
+print("T_y:", T_v)
+
 
 emit_h =   1.0468e-05 #m
 rel_error_h = 4.5251 #%
@@ -73,3 +77,10 @@ print("Emittanz", emit_v, "m")
 print("alpha", alpha_v)
 print("beta", beta_v, " m")
 print("gamma", gamma_v, " 1/m")
+
+#normierte Emittanz berechnen
+emit_n_h = emit_h * beta_gamma
+emit_n_v = emit_v * beta_gamma
+
+print("normierte Emittanz x:", emit_n_h, "m")
+print("normierte Emittanz y:", emit_n_v, "m")
