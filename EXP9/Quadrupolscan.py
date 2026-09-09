@@ -17,17 +17,21 @@ yRMS = unp.uarray(yRMS, RMSerr) #als uarray mit Fehler
 
 #horizontal
 fig, ax = plt.subplots()
-ax.errorbar(I_h, unp.nominal_values(xRMS), yerr=RMSerr, marker="o", linestyle="none")
+ax.errorbar(I_h, unp.nominal_values(xRMS), yerr=RMSerr, marker="o", linestyle="none", capsize=5)
 ax.set_xlim(-2.9, -1.7)
 ax.set_ylim(0.4, 1.5)
+ax.set_title("Horizontaler Quadrupolscan")
+ax.grid(True)
 ax.set_xlabel(r"$I_Q$ [A]")
 ax.set_ylabel(r"$\sigma_x$ [mm]")
 
 #vertikal
 fig, ax = plt.subplots()
-ax.errorbar(I_v, unp.nominal_values(yRMS), yerr=RMSerr, marker="o", linestyle="none")
+ax.errorbar(I_v, unp.nominal_values(yRMS), yerr=RMSerr, marker="o", linestyle="none", capsize=5)
 ax.set_xlim(1.3, 2.5)
 ax.set_ylim(0.2, 0.8)
+ax.set_title("Vertikaler Quadrupolscan")
+ax.grid(True)
 ax.set_xlabel(r"$I_Q$ [A]")
 ax.set_ylabel(r"$\sigma_y$ [mm]")
 plt.show()
