@@ -1,5 +1,3 @@
-import numpy as np
-
 from functions import *
 
 #gemessene Positionen des Dipols und des Schirms
