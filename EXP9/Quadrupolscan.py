@@ -1,6 +1,5 @@
 from functions import *
 from Energiemessung import beta_gamma
-Ierr = 0.003 #Fehler auf Strom in A #ToDo: nehmen oder weglassen?
 RMSerr = 0.2/np.sqrt(15) #Fehler auf Strahlbreiten in mm
 
 #Messergebnisse einlesen
