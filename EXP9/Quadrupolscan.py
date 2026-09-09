@@ -7,34 +7,36 @@ horizontal = np.loadtxt("Quadrupolscan_horizontal.txt", unpack=True)
 I_h = horizontal[0] #Quadrupolstrom in A
 xRMS = horizontal[1] #horizontale Strahlbreite in mm
 xRMS = unp.uarray(xRMS, RMSerr) #als uarray mit Fehler
+xRMS_squared = xRMS**2
 
 vertikal = np.loadtxt("Quadrupolscan_vertikal.txt", unpack=True)
 I_v = vertikal[0] #Quadrupolstrom in A
 yRMS = vertikal[1] #vertikale Strahlbreite in mm
 yRMS = unp.uarray(yRMS, RMSerr) #als uarray mit Fehler
+yRMS_squared = yRMS**2
 
 #graphische Darstellung
 
 #horizontal
 fig, ax = plt.subplots()
-ax.errorbar(I_h, unp.nominal_values(xRMS), yerr=RMSerr, marker="o", linestyle="none", capsize=5)
+ax.errorbar(I_h, unp.nominal_values(xRMS_squared), yerr=unp.std_devs(xRMS_squared), marker="o", linestyle="none", capsize=5)
 ax.set_xlim(-2.9, -1.7)
-ax.set_ylim(0.4, 1.5)
+ax.set_ylim(0, 2.25)
 ax.set_title("Horizontaler Quadrupolscan")
 ax.grid(True)
 ax.set_xlabel(r"$I_Q$ [A]")
-ax.set_ylabel(r"$\sigma_x$ [mm]")
+ax.set_ylabel(r"$\sigma_x^2\quad[mm^2]$")
 
 #vertikal
 fig, ax = plt.subplots()
-ax.errorbar(I_v, unp.nominal_values(yRMS), yerr=RMSerr, marker="o", linestyle="none", capsize=5)
+ax.errorbar(I_v, unp.nominal_values(yRMS_squared), yerr=unp.std_devs(yRMS_squared), marker="o", linestyle="none", capsize=5)
 ax.set_xlim(1.3, 2.5)
-ax.set_ylim(0.2, 0.8)
+ax.set_ylim(0, 0.7)
 ax.set_title("Vertikaler Quadrupolscan")
 ax.grid(True)
 ax.set_xlabel(r"$I_Q$ [A]")
-ax.set_ylabel(r"$\sigma_y$ [mm]")
-
+ax.set_ylabel(r"$\sigma_y^2\quad[mm^2]$")
+plt.show()
 
 #Mit dem Skript berechnete Emittanz und Fehler und T-Vektoren (siehe Gl. 62):
 T_h = 1.0e-03 * np.array([0.0142, 0.0398, 0.1188])
