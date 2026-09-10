@@ -1,12 +1,17 @@
 #Funktionen und Dinge, die wichtig zu wissen sind
 import numpy as np
+import matplotlib as mpl
 import matplotlib.pyplot as plt
+import seaborn as sns
 import uncertainties as uc
 import uncertainties.unumpy as unp
 import tabulate as tl
 import scipy.optimize as opt
 import sklearn.metrics as skm
 
+#futureWarnings von uncertainties ausschalten
+import warnings
+warnings.filterwarnings("ignore", category=FutureWarning, module="uncertainties")
 
 #Standardabweichung (Stichprobenvarianz) richtig berechnen:
 #np.std(list, ddof=1)
