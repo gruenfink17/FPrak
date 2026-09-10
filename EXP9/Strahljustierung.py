@@ -3,7 +3,7 @@ from uncertainties import unumpy as unp
 
 from functions import *
 
-
+# todo: Legende verschieben (überdeckt teilweise den Plot)
 
 # Strahlbasierte Justage
 #linearer fit
@@ -34,10 +34,10 @@ print("a2h", a2h, "b2h", b2h)
 
 x_lin = np.linspace(-3, 0, 50)
 
-plt.errorbar(I_Dp1h, x_1h, xerr=Ierr, yerr=yerr, fmt='.', capsize=5, label=f"I_QP=-2.8A, y=({a1h})mm/A $\cdot$ I+({b1h})mm", color='tab:blue')
-plt.errorbar(I_Dp2h, x_2h, xerr=Ierr, yerr=yerr, fmt='.', capsize=5,label=f"I_QP=-1.8A, y=({a2h})mm/A $\cdot$ I+({b2h})mm", color='tab:orange')
-plt.plot(x_lin, linreg(x_lin, a1h.n, b1h.n), color='tab:blue')
-plt.plot(x_lin, linreg(x_lin, a2h.n, b2h.n), color='tab:orange')
+plt.errorbar(I_Dp1h, x_1h, xerr=Ierr, yerr=yerr, fmt='.', capsize=5, label=f"I_QP=-2.8A", color='tab:blue')
+plt.errorbar(I_Dp2h, x_2h, xerr=Ierr, yerr=yerr, fmt='.', capsize=5,label=f"I_QP=-1.8A", color='tab:orange')
+plt.plot(x_lin, linreg(x_lin, a1h.n, b1h.n), color='tab:blue', label=f"Fit: y=({a1h})mm/A $\cdot$ I+({b1h})mm ")
+plt.plot(x_lin, linreg(x_lin, a2h.n, b2h.n), color='tab:orange', label=f"Fit: y=({a2h})mm/A $\cdot$ I+({b2h})mm")
 plt.title("Dipolstrom vs x-Position")
 plt.xlabel("$I_D$ in A")
 plt.ylabel("x-Position in mm")
@@ -63,10 +63,10 @@ a2v,b2v = optimal_params(linreg,I_Dp2v,y_2v,yerr) #a in mm/A, b in mm
 print("a2v", a2v, "b2v", b2v)
 
 x_lin = np.linspace(-1, 2.5)
-plt.errorbar(I_Dp1v, y_1v,  xerr=Ierr, yerr=yerr, fmt='.', capsize=5,label=f"I_QP=1.4A, y=({a1v})mm/A $\cdot$ I+({b1v})mm", color='tab:blue')
-plt.errorbar(I_Dp2v, y_2v, xerr=Ierr, yerr=yerr, fmt='.', capsize=5, label=f"I_QP=2.4A, y=({a2v})mm/A $\cdot$ I+({b2v})mm", color='tab:orange')
-plt.plot(x_lin, linreg(x_lin, a1v.n, b1v.n), color='tab:blue')
-plt.plot(x_lin, linreg(x_lin, a2v.n, b2v.n), color='tab:orange')
+plt.errorbar(I_Dp1v, y_1v,  xerr=Ierr, yerr=yerr, fmt='.', capsize=5,label=f"I_QP=1.4A", color='tab:blue')
+plt.errorbar(I_Dp2v, y_2v, xerr=Ierr, yerr=yerr, fmt='.', capsize=5, label=f"I_QP=2.4A", color='tab:orange')
+plt.plot(x_lin, linreg(x_lin, a1v.n, b1v.n), color='tab:blue', label=f"Fit: y=({a1v})mm/A $\cdot$ I+({b1v})mm" )
+plt.plot(x_lin, linreg(x_lin, a2v.n, b2v.n), color='tab:orange', label=f"Fit: y=({a2v})mm/A $\cdot$ I+({b2v})mm")
 plt.title("Dipolstrom vs y-Position")
 plt.xlabel("$I_D$ in A")
 plt.ylabel("y-Position in mm")
