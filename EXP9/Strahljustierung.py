@@ -1,12 +1,9 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Sep  8 11:45:47 2026
-
-@author: mmebe
-"""
 import numpy as np
+from uncertainties import unumpy as unp
 
 from functions import *
+
+
 
 # Strahlbasierte Justage
 #linearer fit
@@ -16,11 +13,14 @@ def linreg(x, a, b):
 #Fehler auf Position
 yerr = 0.2/np.sqrt(15) #mm
 
+# Fehler Strom
+Ierr = 0.003
 
 # horizontal
 # I_qp = -2.8A
 I_Dp1h = np.array([-2.9, -2.7, -2.5, -2.3, -2.1, -1.9, -1.8, -1.7, -1.5, -1.3, -1.1, -0.9])
 x_1h = np.array([1.512200, 1.004406, 0.442551, 0.086023, -0.691112, -1.317591, -1.645250, -1.984885, -2.643876, -3.29885, -3.962618, -4.677156])
+
 
 a1h,b1h = optimal_params(linreg,I_Dp1h,x_1h,yerr) #a in mm/A, b in mm
 print("a1h", a1h, "b1h", b1h)
@@ -34,12 +34,12 @@ print("a2h", a2h, "b2h", b2h)
 
 x_lin = np.linspace(-3, 0, 50)
 
-plt.scatter(I_Dp1h, x_1h, label="I_QP=-2.8A")
-plt.scatter(I_Dp2h, x_2h, label="I_QP=-1.8A")
-plt.plot(x_lin, linreg(x_lin, a1h.n, b1h.n))
-plt.plot(x_lin, linreg(x_lin, a2h.n, b2h.n))
+plt.errorbar(I_Dp1h, x_1h, xerr=Ierr, yerr=yerr, fmt='.', capsize=5, label=f"I_QP=-2.8A, y=({a1h})mm/A $\cdot$ I+({b1h})mm", color='tab:blue')
+plt.errorbar(I_Dp2h, x_2h, xerr=Ierr, yerr=yerr, fmt='.', capsize=5,label=f"I_QP=-1.8A, y=({a2h})mm/A $\cdot$ I+({b2h})mm", color='tab:orange')
+plt.plot(x_lin, linreg(x_lin, a1h.n, b1h.n), color='tab:blue')
+plt.plot(x_lin, linreg(x_lin, a2h.n, b2h.n), color='tab:orange')
 plt.title("Dipolstrom vs x-Position")
-plt.xlabel("Dipolstrom in A")
+plt.xlabel("$I_D$ in A")
 plt.ylabel("x-Position in mm")
 plt.grid(True)
 plt.legend()
@@ -63,12 +63,12 @@ a2v,b2v = optimal_params(linreg,I_Dp2v,y_2v,yerr) #a in mm/A, b in mm
 print("a2v", a2v, "b2v", b2v)
 
 x_lin = np.linspace(-1, 2.5)
-plt.scatter(I_Dp1v, y_1v, label="I_QP=1.4A")
-plt.scatter(I_Dp2v, y_2v, label="I_QP=2.4A")
-plt.plot(x_lin, linreg(x_lin, a1v.n, b1v.n))
-plt.plot(x_lin, linreg(x_lin, a2v.n, b2v.n))
+plt.errorbar(I_Dp1v, y_1v,  xerr=Ierr, yerr=yerr, fmt='.', capsize=5,label=f"I_QP=1.4A, y=({a1v})mm/A $\cdot$ I+({b1v})mm", color='tab:blue')
+plt.errorbar(I_Dp2v, y_2v, xerr=Ierr, yerr=yerr, fmt='.', capsize=5, label=f"I_QP=2.4A, y=({a2v})mm/A $\cdot$ I+({b2v})mm", color='tab:orange')
+plt.plot(x_lin, linreg(x_lin, a1v.n, b1v.n), color='tab:blue')
+plt.plot(x_lin, linreg(x_lin, a2v.n, b2v.n), color='tab:orange')
 plt.title("Dipolstrom vs y-Position")
-plt.xlabel("Dipolstrom in A")
+plt.xlabel("$I_D$ in A")
 plt.ylabel("y-Position in mm")
 plt.grid(True)
 plt.legend()
@@ -81,7 +81,7 @@ plt.show()
 I_Qph = np.array([-1.8, -1.9, -2.0, -2.1, -2.2, -2.3, -2.4, -2.5, -2.6, -2.7, -2.8])
 x_3h = np.array([0.689216, 0.6775189, 0.636440, 0.593137, 0.527598, 0.500795, 0.433892, 0.323571, 0.259655, 0.177970, 0.089828 ])
 
-plt.scatter(I_Qph, x_3h)
+plt.errorbar(I_Qph, x_3h, xerr=Ierr, yerr=yerr, fmt='.', capsize=5)
 plt.title("Quadrupolstrom vs x-Position")
 plt.xlabel("Quadrupolstrom in A")
 plt.ylabel("x-Position in mm")
@@ -92,12 +92,13 @@ plt.show()
 I_Qpv = np.array([1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.2, 2.3, 2.4])
 y_3v = np.array([8.880867, 8.864568, 8.861105, 8.834509, 8.842101, 8.855623, 8.825236, 8.828870, 8.869526, 8.894355, 8.888450])
 
-plt.scatter(I_Qpv, y_3v)
+plt.errorbar(I_Qpv, y_3v, xerr=Ierr, yerr=yerr, fmt='.', capsize=5)
 plt.title("Quadrupolstrom vs y-Position")
 plt.xlabel("Quadrupolstrom in A")
 plt.ylabel("y-Position in mm")
 plt.grid(True)
 plt.show()
+
 
 
 
