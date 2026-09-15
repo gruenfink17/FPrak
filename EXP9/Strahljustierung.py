@@ -48,15 +48,10 @@ plt.xlim(-3,0)
 plt.ylim(-15,2)
 plt.grid(True)
 
-#set order of legend entries:
-#get handles and labels
+#Reihenfolge Legendeneinträge anpassen
 handles, labels = plt.gca().get_legend_handles_labels()
-
-#specify order of items in legend
-order = [2,0,3,1]
-
-#add legend to plot
-plt.legend([handles[idx] for idx in order],[labels[idx] for idx in order])
+Reihenfolge = [2,0,3,1]
+plt.legend([handles[i] for i in Reihenfolge],[labels[i] for i in Reihenfolge])
 
 plt.show()
 
@@ -95,15 +90,12 @@ plt.ylabel("y-Position in mm")
 plt.xlim(-0.5,2.5)
 plt.ylim(-12,15)
 plt.grid(True)
-#set order of legend entries:
-#get handles and labels
+
+#Reihenfolge Legendeneinträge anpassen
 handles, labels = plt.gca().get_legend_handles_labels()
+Reihenfolge = [2,0,3,1]
+plt.legend([handles[i] for i in Reihenfolge],[labels[i] for i in Reihenfolge])
 
-#specify order of items in legend
-order = [2,0,3,1]
-
-#add legend to plot
-plt.legend([handles[idx] for idx in order],[labels[idx] for idx in order])
 plt.show()
 
 
