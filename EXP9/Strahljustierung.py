@@ -2,8 +2,6 @@
 
 from functions import *
 
-# todo: Legende verschieben (überdeckt teilweise den Plot)
-
 # Strahlbasierte Justage
 #linearer fit
 def linreg(x, a, b):
@@ -60,7 +58,6 @@ order = [2,0,3,1]
 #add legend to plot
 plt.legend([handles[idx] for idx in order],[labels[idx] for idx in order])
 
-#plt.legend()
 plt.show()
 
 ####################### vertikal
@@ -98,7 +95,15 @@ plt.ylabel("y-Position in mm")
 plt.xlim(-0.5,2.5)
 plt.ylim(-12,15)
 plt.grid(True)
-plt.legend()
+#set order of legend entries:
+#get handles and labels
+handles, labels = plt.gca().get_legend_handles_labels()
+
+#specify order of items in legend
+order = [2,0,3,1]
+
+#add legend to plot
+plt.legend([handles[idx] for idx in order],[labels[idx] for idx in order])
 plt.show()
 
 
