@@ -1,5 +1,4 @@
-import numpy as np
-from uncertainties import unumpy as unp
+
 
 from functions import *
 
@@ -34,18 +33,37 @@ print("a2h", a2h, "b2h", b2h)
 
 x_lin = np.linspace(-3, 0, 50)
 
-plt.errorbar(I_Dp1h, x_1h, xerr=Ierr, yerr=yerr, fmt='.', capsize=5, label=f"I_QP=-2.8A", color='tab:blue')
-plt.errorbar(I_Dp2h, x_2h, xerr=Ierr, yerr=yerr, fmt='.', capsize=5,label=f"I_QP=-1.8A", color='tab:orange')
-plt.plot(x_lin, linreg(x_lin, a1h.n, b1h.n), color='tab:blue', label=f"Fit: y=({a1h})mm/A $\cdot$ I+({b1h})mm ")
-plt.plot(x_lin, linreg(x_lin, a2h.n, b2h.n), color='tab:orange', label=f"Fit: y=({a2h})mm/A $\cdot$ I+({b2h})mm")
+#reformat +/- for plot label
+a1h_str = str(a1h).replace("+/-", r"\pm")
+a2h_str = str(a2h).replace("+/-", r"\pm")
+b1h_str = str(b1h).replace("+/-", r"\pm")
+b2h_str = str(b2h).replace("+/-", r"\pm")
+
+plt.errorbar(I_Dp1h, x_1h, xerr=Ierr, yerr=yerr, fmt='.', capsize=5, label=rf"$I_Q=-2.8\,\text{{A}}$", color='tab:blue')
+plt.errorbar(I_Dp2h, x_2h, xerr=Ierr, yerr=yerr, fmt='.', capsize=5,label=rf"$I_Q=-1.8\,\text{{A}}$", color='tab:orange')
+plt.plot(x_lin, linreg(x_lin, a1h.n, b1h.n), color='tab:blue', label=rf"Fit: $x=({a1h_str})\,\frac{{\text{{mm}}}}{{\text{{A}}}}\cdot I_D+({b1h_str})\,\text{{mm}}$")
+plt.plot(x_lin, linreg(x_lin, a2h.n, b2h.n), color='tab:orange', label=rf"Fit: $x=({a2h_str})\,\frac{{\text{{mm}}}}{{\text{{A}}}}\cdot I_D+({b2h_str})\,\text{{mm}}$")
 plt.title("Dipolstrom vs x-Position")
-plt.xlabel("$I_D$ in A")
+plt.xlabel(r"$I_D$ in A")
 plt.ylabel("x-Position in mm")
+plt.xlim(-3,0)
+plt.ylim(-15,2)
 plt.grid(True)
-plt.legend()
+
+#set order of legend entries:
+#get handles and labels
+handles, labels = plt.gca().get_legend_handles_labels()
+
+#specify order of items in legend
+order = [2,0,3,1]
+
+#add legend to plot
+plt.legend([handles[idx] for idx in order],[labels[idx] for idx in order])
+
+#plt.legend()
 plt.show()
 
-# vertikal
+####################### vertikal
 # I_qp = 1.4A
 
 I_Dp1v = np.array([-0.4, -0.2, 0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.4, 1.6, 1.8])
@@ -63,13 +81,22 @@ a2v,b2v = optimal_params(linreg,I_Dp2v,y_2v,yerr) #a in mm/A, b in mm
 print("a2v", a2v, "b2v", b2v)
 
 x_lin = np.linspace(-1, 2.5)
-plt.errorbar(I_Dp1v, y_1v,  xerr=Ierr, yerr=yerr, fmt='.', capsize=5,label=f"I_QP=1.4A", color='tab:blue')
-plt.errorbar(I_Dp2v, y_2v, xerr=Ierr, yerr=yerr, fmt='.', capsize=5, label=f"I_QP=2.4A", color='tab:orange')
-plt.plot(x_lin, linreg(x_lin, a1v.n, b1v.n), color='tab:blue', label=f"Fit: y=({a1v})mm/A $\cdot$ I+({b1v})mm" )
-plt.plot(x_lin, linreg(x_lin, a2v.n, b2v.n), color='tab:orange', label=f"Fit: y=({a2v})mm/A $\cdot$ I+({b2v})mm")
+#reformat +/- for plot label
+a1v_str = str(a1v).replace("+/-", r"\pm")
+a2v_str = str(a2v).replace("+/-", r"\pm")
+b1v_str = str(b1v).replace("+/-", r"\pm")
+b2v_str = str(b2v).replace("+/-", r"\pm")
+
+
+plt.errorbar(I_Dp1v, y_1v,  xerr=Ierr, yerr=yerr, fmt='.', capsize=5,label=rf"$I_Q=1.4\,\text{{A}}$", color='tab:blue')
+plt.errorbar(I_Dp2v, y_2v, xerr=Ierr, yerr=yerr, fmt='.', capsize=5, label=rf"$I_Q=2.4\,\text{{A}}$", color='tab:orange')
+plt.plot(x_lin, linreg(x_lin, a1v.n, b1v.n), color='tab:blue', label=rf"Fit: $y=({a1v_str})\,\frac{{\text{{mm}}}}{{\text{{A}}}}\cdot I_D+({b1v_str})\,\text{{mm}}$" )
+plt.plot(x_lin, linreg(x_lin, a2v.n, b2v.n), color='tab:orange', label=rf"Fit: $y=({a2v_str})\,\frac{{\text{{mm}}}}{{\text{{A}}}}\cdot I_D+({b2v_str})\,\text{{mm}}$")
 plt.title("Dipolstrom vs y-Position")
-plt.xlabel("$I_D$ in A")
+plt.xlabel(r"$I_D$ in A")
 plt.ylabel("y-Position in mm")
+plt.xlim(-0.5,2.5)
+plt.ylim(-12,15)
 plt.grid(True)
 plt.legend()
 plt.show()
@@ -77,7 +104,6 @@ plt.show()
 
 # testen: Quadrupolstrom ändern bei Dipolstrom der Schnittstelle
 
-# horizontal (sieht linear aus, aber different ist 2pixel und wir messen auf 1pixel genau, also passt schon)
 I_Qph = np.array([-1.8, -1.9, -2.0, -2.1, -2.2, -2.3, -2.4, -2.5, -2.6, -2.7, -2.8])
 x_3h = np.array([0.689216, 0.6775189, 0.636440, 0.593137, 0.527598, 0.500795, 0.433892, 0.323571, 0.259655, 0.177970, 0.089828 ])
 
@@ -88,7 +114,7 @@ plt.ylabel("x-Position in mm")
 plt.grid(True)
 plt.show()
 
-# vertikal (Ungenauigkeiten zB dadurch dass wir die Schraube getroffen haben)
+##########################vertikal
 I_Qpv = np.array([1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.2, 2.3, 2.4])
 y_3v = np.array([8.880867, 8.864568, 8.861105, 8.834509, 8.842101, 8.855623, 8.825236, 8.828870, 8.869526, 8.894355, 8.888450])
 
